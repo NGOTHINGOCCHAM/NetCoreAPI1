@@ -20,7 +20,13 @@ namespace BaiThucHanhSo3.Data
         public DbSet<Order>          Orders          { get; set; }
         public DbSet<OrderDetail>    OrderDetails    { get; set; }
 
-       
-       
+        // Buổi 12: Quản lý kho thiết bị điện tử
+        public DbSet<Supplier>       Suppliers       { get; set; }
+        public DbSet<DeviceType>     DeviceTypes     { get; set; }
+        public DbSet<Device>         Devices         { get; set; }
+        public DbSet<ImportReceipt>  ImportReceipts  { get; set; }
+        public DbSet<ImportDetail>   ImportDetails   { get; set; }
+        public DbSet<ExportReceipt>  ExportReceipts  { get; set; }
+        public DbSet<ExportDetail>   ExportDetails   { get; set; }
     }
 }

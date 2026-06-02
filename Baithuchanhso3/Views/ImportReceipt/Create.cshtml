@@ -1,0 +1,22 @@
+@model BaiThucHanhSo3.Models.ImportReceipt
+<h2>Tạo phiếu nhập kho</h2>
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="SupplierId" class="form-label">Nhà cung cấp</label>
+        <select asp-for="SupplierId" asp-items="ViewBag.SupplierId" class="form-select">
+            <option value="">-- Chọn nhà cung cấp --</option>
+        </select>
+        <span asp-validation-for="SupplierId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ImportDate" class="form-label">Ngày nhập</label>
+        <input asp-for="ImportDate" class="form-control" type="datetime-local" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Note" class="form-label">Ghi chú</label>
+        <textarea asp-for="Note" class="form-control" rows="2"></textarea>
+    </div>
+    <button class="btn btn-primary">Tạo phiếu & thêm thiết bị</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

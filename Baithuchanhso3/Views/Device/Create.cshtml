@@ -1,0 +1,11 @@
+@model BaiThucHanhSo3.Models.Device
+<h2>Thêm thiết bị</h2>
+<form asp-action="Create" method="post">
+    <div class="mb-3"><label asp-for="DeviceCode" class="form-label"></label><input asp-for="DeviceCode" class="form-control" /><span asp-validation-for="DeviceCode" class="text-danger"></span></div>
+    <div class="mb-3"><label asp-for="DeviceName" class="form-label"></label><input asp-for="DeviceName" class="form-control" /><span asp-validation-for="DeviceName" class="text-danger"></span></div>
+    <div class="mb-3"><label asp-for="DeviceTypeId" class="form-label">Loại thiết bị</label><select asp-for="DeviceTypeId" asp-items="ViewBag.DeviceTypeId" class="form-select"><option value="">-- Chọn loại --</option></select><span asp-validation-for="DeviceTypeId" class="text-danger"></span></div>
+    <div class="mb-3"><label asp-for="Description" class="form-label"></label><textarea asp-for="Description" class="form-control" rows="3"></textarea></div>
+    <button class="btn btn-primary">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

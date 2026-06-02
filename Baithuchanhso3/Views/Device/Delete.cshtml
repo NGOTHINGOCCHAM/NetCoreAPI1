@@ -1,0 +1,8 @@
+@model BaiThucHanhSo3.Models.Device
+<h2 class="text-danger">Xoá thiết bị</h2>
+<div class="alert alert-danger">Bạn có chắc muốn xoá thiết bị <strong>@Model.DeviceName</strong> (Tồn: @Model.StockQuantity) không?</div>
+<form asp-action="Delete" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <button type="submit" class="btn btn-danger">Xoá</button>
+    <a asp-action="Index" class="btn btn-secondary">Huỷ</a>
+</form>

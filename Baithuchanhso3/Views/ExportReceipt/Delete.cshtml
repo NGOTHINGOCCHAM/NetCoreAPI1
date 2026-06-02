@@ -1,0 +1,11 @@
+@model BaiThucHanhSo3.Models.ExportReceipt
+<h2 class="text-danger">Xoá phiếu xuất</h2>
+<div class="alert alert-danger">
+    Xoá phiếu xuất #<strong>@Model.Id</strong>?
+    <br/><small>Tồn kho sẽ được hoàn trả tương ứng.</small>
+</div>
+<form asp-action="Delete" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <button type="submit" class="btn btn-danger">Xoá</button>
+    <a asp-action="Index" class="btn btn-secondary">Huỷ</a>
+</form>
