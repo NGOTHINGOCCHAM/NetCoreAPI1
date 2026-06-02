@@ -1,0 +1,13 @@
+@model BaiThucHanhSo3.Models.Faculty
+<h2>Sửa khoa</h2>
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="mb-3">
+        <label asp-for="FacultyName" class="form-label"></label>
+        <input asp-for="FacultyName" class="form-control" />
+        <span asp-validation-for="FacultyName" class="text-danger"></span>
+    </div>
+    <button class="btn btn-warning">Cập nhật</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

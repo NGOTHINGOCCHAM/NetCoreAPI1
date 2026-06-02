@@ -1,0 +1,12 @@
+@model BaiThucHanhSo3.Models.Faculty
+<h2>Thêm khoa</h2>
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="FacultyName" class="form-label"></label>
+        <input asp-for="FacultyName" class="form-control" placeholder="Nhập tên khoa" />
+        <span asp-validation-for="FacultyName" class="text-danger"></span>
+    </div>
+    <button class="btn btn-primary">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

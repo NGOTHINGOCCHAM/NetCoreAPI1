@@ -1,26 +1,19 @@
-@model List<BaiThucHanhSo3.Models.ViewModels.StudentFacultyViewModel>
-<h2 class="mb-4">Danh sách sinh viên</h2>
+@model List<BaiThucHanhSo3.Models.Faculty>
+<h2 class="mb-4">Danh sách khoa</h2>
 @if (TempData["Success"] != null)
 {
     <div class="alert alert-success">@TempData["Success"]</div>
 }
-<a asp-action="Create" class="btn btn-success mb-3">+ Thêm sinh viên</a>
+<a asp-action="Create" class="btn btn-success mb-3">+ Thêm khoa</a>
 <table class="table table-bordered table-hover">
     <thead class="table-dark">
-        <tr>
-            <th>ID</th><th>Mã SV</th><th>Họ tên</th>
-            <th>Tuổi</th><th>Email</th><th>Khoa</th><th>Hành động</th>
-        </tr>
+        <tr><th>ID</th><th>Tên khoa</th><th>Hành động</th></tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
                 <td>@item.Id</td>
-                <td>@item.StudentCode</td>
-                <td>@item.FullName</td>
-                <td>@item.Age</td>
-                <td>@item.Email</td>
                 <td>@item.FacultyName</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>

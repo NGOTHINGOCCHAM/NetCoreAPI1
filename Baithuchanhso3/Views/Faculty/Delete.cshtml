@@ -1,7 +1,7 @@
-@model BaiThucHanhSo3.Models.Student
-<h2 class="text-danger mb-4">Xoá sinh viên</h2>
+@model BaiThucHanhSo3.Models.Faculty
+<h2 class="text-danger">Xoá khoa</h2>
 <div class="alert alert-danger">
-    Bạn có chắc muốn xoá <strong>@Model.FullName</strong> không?
+    Bạn có chắc muốn xoá khoa <strong>@Model.FacultyName</strong> không?
 </div>
 <form asp-action="Delete" method="post">
     <input type="hidden" name="id" value="@Model.Id" />
