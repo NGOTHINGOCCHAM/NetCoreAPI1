@@ -1,32 +1,250 @@
-@model List<BaiThucHanhSo3.Models.ViewModels.StudentFacultyViewModel>
-<h2 class="mb-4">Danh sách sinh viên</h2>
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
+@{
+    ViewData["Title"] = "Quản lý sinh viên (Ajax)";
 }
-<a asp-action="Create" class="btn btn-success mb-3">+ Thêm sinh viên</a>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Danh sách sinh viên</h4>
+    <button class="btn btn-success" onclick="openAddModal()">+ Thêm sinh viên</button>
+</div>
+
+@* Thông báo *@
+<div id="alertBox" class="alert d-none"></div>
+
+@* Bảng danh sách *@
 <table class="table table-bordered table-hover">
     <thead class="table-dark">
         <tr>
-            <th>ID</th><th>Mã SV</th><th>Họ tên</th>
-            <th>Tuổi</th><th>Email</th><th>Khoa</th><th>Hành động</th>
+            <th>Mã SV</th>
+            <th>Họ tên</th>
+            <th>Tuổi</th>
+            <th>Email</th>
+            <th>Khoa</th>
+            <th style="width:160px">Hành động</th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Id</td>
-                <td>@item.StudentCode</td>
-                <td>@item.FullName</td>
-                <td>@item.Age</td>
-                <td>@item.Email</td>
-                <td>@item.FacultyName</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Xoá</a>
-                </td>
-            </tr>
-        }
+    <tbody id="studentTableBody">
+        <tr><td colspan="6" class="text-center">Đang tải...</td></tr>
     </tbody>
 </table>
+
+@* ═══════════════════════════════════════════════
+   MODAL THÊM / SỬA SINH VIÊN
+═══════════════════════════════════════════════ *@
+<div class="modal fade" id="studentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Thêm sinh viên</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="studentId" />
+
+                <div class="mb-3">
+                    <label class="form-label">Mã sinh viên <span class="text-danger">*</span></label>
+                    <input type="text" id="studentCode" class="form-control" placeholder="VD: SV001" />
+                    <div class="text-danger small" id="err-StudentCode"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Họ tên <span class="text-danger">*</span></label>
+                    <input type="text" id="fullName" class="form-control" placeholder="Nhập họ và tên" />
+                    <div class="text-danger small" id="err-FullName"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Tuổi</label>
+                    <input type="number" id="age" class="form-control" placeholder="18 - 60" />
+                    <div class="text-danger small" id="err-Age"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="example@email.com" />
+                    <div class="text-danger small" id="err-Email"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Khoa</label>
+                    <select id="facultyId" class="form-select">
+                        <option value="">-- Chọn khoa --</option>
+                        @foreach (var f in (IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.Faculties)
+                        {
+                            <option value="@f.Value">@f.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                <button type="button" class="btn btn-primary" id="btnSave" onclick="saveStudent()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* ═══════════════════════════════════════════════
+   MODAL XÁC NHẬN XOÁ
+═══════════════════════════════════════════════ *@
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Xác nhận xoá</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc muốn xoá sinh viên <strong id="deleteStudentName"></strong> không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Xoá</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let deleteId = null;
+    const studentModal = new bootstrap.Modal(document.getElementById('studentModal'));
+    const deleteModal  = new bootstrap.Modal(document.getElementById('deleteModal'));
+
+    // ── Tải danh sách sinh viên ──────────────────────────────────────────
+    function loadStudents() {
+        fetch('/Student/GetAll')
+            .then(r => r.json())
+            .then(data => {
+                const tbody = document.getElementById('studentTableBody');
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Chưa có sinh viên nào</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data.map(s => `
+                    <tr id="row-${s.id}">
+                        <td>${s.studentCode}</td>
+                        <td>${s.fullName}</td>
+                        <td>${s.age ?? ''}</td>
+                        <td>${s.email ?? ''}</td>
+                        <td>${s.facultyName}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="openEditModal(${s.id})">Sửa</button>
+                            <button class="btn btn-danger btn-sm"  onclick="openDeleteModal(${s.id}, '${s.fullName}')">Xoá</button>
+                        </td>
+                    </tr>
+                `).join('');
+            });
+    }
+
+    // ── Mở modal Thêm ───────────────────────────────────────────────────
+    function openAddModal() {
+        document.getElementById('modalTitle').textContent = 'Thêm sinh viên';
+        document.getElementById('studentId').value  = '';
+        document.getElementById('studentCode').value = '';
+        document.getElementById('fullName').value    = '';
+        document.getElementById('age').value         = '';
+        document.getElementById('email').value       = '';
+        document.getElementById('facultyId').value   = '';
+        clearErrors();
+        studentModal.show();
+    }
+
+    // ── Mở modal Sửa ────────────────────────────────────────────────────
+    function openEditModal(id) {
+        fetch(`/Student/GetById?id=${id}`)
+            .then(r => r.json())
+            .then(s => {
+                document.getElementById('modalTitle').textContent = 'Sửa sinh viên';
+                document.getElementById('studentId').value   = s.id;
+                document.getElementById('studentCode').value = s.studentCode;
+                document.getElementById('fullName').value    = s.fullName;
+                document.getElementById('age').value         = s.age ?? '';
+                document.getElementById('email').value       = s.email ?? '';
+                document.getElementById('facultyId').value   = s.facultyId ?? '';
+                clearErrors();
+                studentModal.show();
+            });
+    }
+
+    // ── Lưu (Thêm hoặc Sửa) ─────────────────────────────────────────────
+    function saveStudent() {
+        const id = document.getElementById('studentId').value;
+        const body = {
+            id:          id ? parseInt(id) : 0,
+            studentCode: document.getElementById('studentCode').value,
+            fullName:    document.getElementById('fullName').value,
+            age:         document.getElementById('age').value ? parseInt(document.getElementById('age').value) : null,
+            email:       document.getElementById('email').value || null,
+            facultyId:   document.getElementById('facultyId').value ? parseInt(document.getElementById('facultyId').value) : null
+        };
+
+        const isEdit   = !!id;
+        const url      = isEdit ? `/Student/Edit?id=${id}` : '/Student/Create';
+        const method   = isEdit ? 'PUT' : 'POST';
+
+        clearErrors();
+
+        fetch(url, {
+            method:  method,
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify(body)
+        })
+        .then(async r => {
+            const data = await r.json();
+            if (r.ok) {
+                studentModal.hide();
+                showAlert('success', data.message);
+                loadStudents();
+            } else {
+                // Hiển thị lỗi validate từng field
+                if (data.errors) {
+                    for (const [field, msgs] of Object.entries(data.errors)) {
+                        const el = document.getElementById(`err-${field}`);
+                        if (el) el.textContent = msgs[0];
+                    }
+                }
+            }
+        });
+    }
+
+    // ── Mở modal Xoá ────────────────────────────────────────────────────
+    function openDeleteModal(id, name) {
+        deleteId = id;
+        document.getElementById('deleteStudentName').textContent = name;
+        deleteModal.show();
+    }
+
+    // ── Xác nhận xoá ────────────────────────────────────────────────────
+    function confirmDelete() {
+        fetch(`/Student/Delete?id=${deleteId}`, { method: 'DELETE' })
+            .then(async r => {
+                const data = await r.json();
+                deleteModal.hide();
+                if (r.ok) {
+                    showAlert('success', data.message);
+                    // Xoá dòng ngay trong bảng (không cần reload)
+                    const row = document.getElementById(`row-${deleteId}`);
+                    if (row) row.remove();
+                } else {
+                    showAlert('danger', 'Xoá thất bại!');
+                }
+            });
+    }
+
+    // ── Hiển thị thông báo ───────────────────────────────────────────────
+    function showAlert(type, msg) {
+        const box = document.getElementById('alertBox');
+        box.className = `alert alert-${type}`;
+        box.textContent = msg;
+        setTimeout(() => box.classList.add('d-none'), 3000);
+    }
+
+    // ── Xoá thông báo lỗi trong form ────────────────────────────────────
+    function clearErrors() {
+        document.querySelectorAll('[id^="err-"]').forEach(el => el.textContent = '');
+    }
+
+    // ── Load khi trang khởi động ─────────────────────────────────────────
+    loadStudents();
+</script>
+}

@@ -12,82 +12,104 @@ namespace BaiThucHanhSo3.Controllers
         private readonly ApplicationDbContext _context;
         public StudentController(ApplicationDbContext context) => _context = context;
 
-        // INDEX: dùng LinQ + ViewModel để hiển thị Mã SV, Họ tên, Khoa
+        // ── Trang chính (load 1 lần duy nhất) ──────────────────────────────
         public IActionResult Index()
+        {
+            ViewBag.Faculties = new SelectList(
+                _context.Faculties.OrderBy(f => f.FacultyName).ToList(), "Id", "FacultyName");
+            return View();
+        }
+
+        // ── AJAX: Lấy danh sách sinh viên ──────────────────────────────────
+        [HttpGet]
+        public IActionResult GetAll()
         {
             var list = _context.Students
                 .Include(s => s.Faculty)
                 .Select(s => new StudentFacultyViewModel
                 {
-                    Id        = s.Id,
+                    Id          = s.Id,
                     StudentCode = s.StudentCode,
-                    FullName  = s.FullName,
-                    Age       = s.Age,
-                    Email     = s.Email,
+                    FullName    = s.FullName,
+                    Age         = s.Age,
+                    Email       = s.Email,
                     FacultyName = s.Faculty != null ? s.Faculty.FacultyName : "Chưa có khoa"
                 })
+                .OrderBy(s => s.StudentCode)
                 .ToList();
-            return View(list);
+
+            return Json(list);
         }
 
-        public IActionResult Create()
+        // ── AJAX: Lấy 1 sinh viên theo id (dùng cho form Sửa) ──────────────
+        [HttpGet]
+        public IActionResult GetById(int id)
         {
-            ViewBag.FacultyId = new SelectList(_context.Faculties.ToList(), "Id", "FacultyName");
-            return View();
+            var s = _context.Students.Find(id);
+            if (s == null) return NotFound();
+            return Json(s);
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult Create(Student student)
+        // ── AJAX: Thêm sinh viên ────────────────────────────────────────────
+        [HttpPost]
+        public IActionResult Create([FromBody] Student student)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.FacultyId = new SelectList(_context.Faculties.ToList(), "Id", "FacultyName");
-                return View(student);
+                var errors = ModelState
+                    .Where(x => x.Value!.Errors.Any())
+                    .ToDictionary(
+                        k => k.Key,
+                        v => v.Value!.Errors.Select(e => e.ErrorMessage).ToList()
+                    );
+                return BadRequest(new { errors });
             }
+
             _context.Students.Add(student);
             _context.SaveChanges();
-            TempData["Success"] = "Thêm sinh viên thành công!";
-            return RedirectToAction("Index");
+            return Ok(new { message = "Thêm sinh viên thành công!" });
         }
 
-        public IActionResult Edit(int id)
+        // ── AJAX: Cập nhật sinh viên ────────────────────────────────────────
+        [HttpPut]
+        public IActionResult Edit(int id, [FromBody] Student student)
         {
-            var student = _context.Students.Find(id);
-            if (student == null) return RedirectToAction("NotFoundPage", "Home");
-            ViewBag.FacultyId = new SelectList(_context.Faculties.ToList(), "Id", "FacultyName", student.FacultyId);
-            return View(student);
-        }
+            if (id != student.Id) return BadRequest();
 
-        [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult Edit(Student student)
-        {
             if (!ModelState.IsValid)
             {
-                ViewBag.FacultyId = new SelectList(_context.Faculties.ToList(), "Id", "FacultyName", student.FacultyId);
-                return View(student);
+                var errors = ModelState
+                    .Where(x => x.Value!.Errors.Any())
+                    .ToDictionary(
+                        k => k.Key,
+                        v => v.Value!.Errors.Select(e => e.ErrorMessage).ToList()
+                    );
+                return BadRequest(new { errors });
             }
-            _context.Students.Update(student);
+
+            var existing = _context.Students.Find(id);
+            if (existing == null) return NotFound();
+
+            existing.StudentCode = student.StudentCode;
+            existing.FullName    = student.FullName;
+            existing.Age         = student.Age;
+            existing.Email       = student.Email;
+            existing.FacultyId   = student.FacultyId;
+
             _context.SaveChanges();
-            TempData["Success"] = "Cập nhật sinh viên thành công!";
-            return RedirectToAction("Index");
+            return Ok(new { message = "Cập nhật sinh viên thành công!" });
         }
 
+        // ── AJAX: Xoá sinh viên ─────────────────────────────────────────────
+        [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var student = _context.Students.Include(s => s.Faculty).FirstOrDefault(s => s.Id == id);
-            if (student == null) return RedirectToAction("NotFoundPage", "Home");
-            return View(student);
-        }
-
-        [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
-        {
             var student = _context.Students.Find(id);
-            if (student == null) return RedirectToAction("NotFoundPage", "Home");
+            if (student == null) return NotFound();
+
             _context.Students.Remove(student);
             _context.SaveChanges();
-            TempData["Success"] = "Xóa sinh viên thành công!";
-            return RedirectToAction("Index");
+            return Ok(new { message = "Xóa sinh viên thành công!" });
         }
     }
 }
