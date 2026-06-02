@@ -1,0 +1,22 @@
+@model BaiThucHanhSo3.Models.Product
+<h2>Thêm sản phẩm</h2>
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="ProductName" class="form-label"></label>
+        <input asp-for="ProductName" class="form-control" placeholder="Nhập tên sản phẩm" />
+        <span asp-validation-for="ProductName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Price" class="form-label"></label>
+        <input asp-for="Price" class="form-control" type="number" step="1000" placeholder="Nhập đơn giá" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Mô tả sản phẩm"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <button class="btn btn-primary">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

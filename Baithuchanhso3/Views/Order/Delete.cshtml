@@ -1,0 +1,12 @@
+@model BaiThucHanhSo3.Models.Order
+<h2 class="text-danger">Xoá đơn hàng</h2>
+<div class="alert alert-danger">
+    Bạn có chắc muốn xoá đơn hàng #<strong>@Model.Id</strong>
+    của khách <strong>@Model.Customer?.FullName</strong> không?<br/>
+    <small>Tất cả chi tiết đơn hàng cũng sẽ bị xoá.</small>
+</div>
+<form asp-action="Delete" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <button type="submit" class="btn btn-danger">Xoá</button>
+    <a asp-action="Index" class="btn btn-secondary">Huỷ</a>
+</form>

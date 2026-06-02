@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -28,31 +28,63 @@
                     <ul class="navbar-nav flex-grow-1">
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark"
-                               asp-controller="Home" asp-action="Index">
-                                Home
-                            </a>
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark"
-                               asp-controller="Home" asp-action="Privacy">
-                                Privacy
+                        @* Buổi 8: Sinh viên & Khoa *@
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                Buổi 8
                             </a>
+                            <ul class="dropdown-menu">
+                                <li><h6 class="dropdown-header">Sinh viên</h6></li>
+                                <li><a class="dropdown-item" asp-controller="Student" asp-action="Index">Danh sách SV</a></li>
+                                <li><a class="dropdown-item" asp-controller="Student" asp-action="Create">Thêm sinh viên</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Khoa</h6></li>
+                                <li><a class="dropdown-item" asp-controller="Faculty" asp-action="Index">Danh sách khoa</a></li>
+                                <li><a class="dropdown-item" asp-controller="Faculty" asp-action="Create">Thêm khoa</a></li>
+                            </ul>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark"
-                               asp-controller="Student" asp-action="Index">
-                                Danh sách SV
+                        @* Buổi 9: Bán hàng *@
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                Buổi 9
                             </a>
+                            <ul class="dropdown-menu">
+                                <li><h6 class="dropdown-header">Khách hàng</h6></li>
+                                <li><a class="dropdown-item" asp-controller="Customer" asp-action="Index">Danh sách KH</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Sản phẩm</h6></li>
+                                <li><a class="dropdown-item" asp-controller="Product" asp-action="Index">Danh sách SP</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Đơn hàng</h6></li>
+                                <li><a class="dropdown-item" asp-controller="Order" asp-action="Index">Danh sách đơn</a></li>
+                                <li><a class="dropdown-item" asp-controller="Order" asp-action="Create">Tạo đơn hàng</a></li>
+                            </ul>
                         </li>
 
+                        @* Buổi 10: Import Excel *@
                         <li class="nav-item">
-                            <a class="nav-link text-dark"
-                               asp-controller="Student" asp-action="Create">
-                                Thêm sinh viên
+                            <a class="nav-link text-dark" asp-controller="Import" asp-action="Index">Buổi 10</a>
+                        </li>
+
+                        @* Buổi 12: Quản lý kho *@
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                Buổi 12
                             </a>
+                            <ul class="dropdown-menu">
+                                <li><h6 class="dropdown-header">Danh mục</h6></li>
+                                <li><a class="dropdown-item" asp-controller="Supplier"   asp-action="Index">Nhà cung cấp</a></li>
+                                <li><a class="dropdown-item" asp-controller="DeviceType" asp-action="Index">Loại thiết bị</a></li>
+                                <li><a class="dropdown-item" asp-controller="Device"     asp-action="Index">Thiết bị</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Kho</h6></li>
+                                <li><a class="dropdown-item" asp-controller="ImportReceipt" asp-action="Index">Phiếu nhập kho</a></li>
+                                <li><a class="dropdown-item" asp-controller="ExportReceipt" asp-action="Index">Phiếu xuất kho</a></li>
+                            </ul>
                         </li>
 
                     </ul>
@@ -75,7 +107,6 @@
         </div>
     </footer>
 
-    <!-- ✅ TOAST -->
     @if (TempData["Success"] != null)
     {
         <div class="toast-container position-fixed top-0 end-0 p-3">
@@ -91,12 +122,10 @@
         </div>
     }
 
-    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-    <!-- ✅ SCRIPT SHOW TOAST -->
     <script>
         var toastEl = document.getElementById('liveToast');
         if (toastEl) {

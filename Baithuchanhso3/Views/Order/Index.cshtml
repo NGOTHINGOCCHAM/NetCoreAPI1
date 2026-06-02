@@ -1,0 +1,29 @@
+@model List<BaiThucHanhSo3.Models.Order>
+<h2 class="mb-4">Danh sách đơn hàng</h2>
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+<a asp-action="Create" class="btn btn-success mb-3">+ Tạo đơn hàng</a>
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr><th>ID</th><th>Khách hàng</th><th>Ngày đặt</th><th>Số SP</th><th>Tổng tiền</th><th>Hành động</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Customer?.FullName</td>
+                <td>@item.OrderDate.ToString("dd/MM/yyyy")</td>
+                <td>@item.OrderDetails.Count</td>
+                <td class="text-danger fw-bold">@item.TotalAmount.ToString("N0") đ</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Chi tiết</a>
+                    <a asp-action="Edit"    asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
+                    <a asp-action="Delete"  asp-route-id="@item.Id" class="btn btn-danger btn-sm">Xoá</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

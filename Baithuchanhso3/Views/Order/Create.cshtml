@@ -1,0 +1,22 @@
+@model BaiThucHanhSo3.Models.Order
+<h2>Tạo đơn hàng</h2>
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="CustomerId" class="form-label">Khách hàng</label>
+        <select asp-for="CustomerId" asp-items="ViewBag.CustomerId" class="form-select">
+            <option value="">-- Chọn khách hàng --</option>
+        </select>
+        <span asp-validation-for="CustomerId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="OrderDate" class="form-label">Ngày đặt</label>
+        <input asp-for="OrderDate" class="form-control" type="datetime-local" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Note" class="form-label">Ghi chú</label>
+        <textarea asp-for="Note" class="form-control" rows="2"></textarea>
+    </div>
+    <button class="btn btn-primary">Tạo đơn & thêm sản phẩm</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
