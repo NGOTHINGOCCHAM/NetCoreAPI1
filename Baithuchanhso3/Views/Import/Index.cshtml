@@ -1,0 +1,82 @@
+<h2 class="mb-4">Import sinh viên từ file Excel</h2>
+
+@* Hiển thị kết quả import *@
+@if (TempData["ImportSuccess"] != null)
+{
+    <div class="alert alert-success">✅ @TempData["ImportSuccess"]</div>
+}
+@if (TempData["ImportSkip"] != null)
+{
+    <div class="alert alert-warning">⚠️ @TempData["ImportSkip"]</div>
+}
+@if (TempData["ImportErrors"] != null)
+{
+    <div class="alert alert-danger">
+        <strong>Các lỗi phát sinh:</strong>
+        <ul class="mb-0">
+            @foreach (var err in TempData["ImportErrors"]!.ToString()!.Split('|'))
+            {
+                <li>@err</li>
+            }
+        </ul>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">❌ @TempData["Error"]</div>
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <strong>📤 Upload file Excel</strong>
+            </div>
+            <div class="card-body">
+                <form asp-action="Upload" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Chọn file Excel (.xlsx)</label>
+                        <input type="file" name="excelFile" accept=".xlsx,.xls" class="form-control" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Import dữ liệu</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <strong>📋 Hướng dẫn & File mẫu</strong>
+            </div>
+            <div class="card-body">
+                <p>File Excel phải có cấu trúc như sau:</p>
+                <table class="table table-bordered table-sm">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Cột A</th><th>Cột B</th><th>Cột C</th><th>Cột D</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-warning"><td><strong>StudentCode</strong></td><td><strong>FullName</strong></td><td><strong>Age</strong></td><td><strong>Email</strong></td></tr>
+                        <tr><td>SV001</td><td>Nguyễn Văn A</td><td>20</td><td>sva@email.com</td></tr>
+                        <tr><td>SV002</td><td>Trần Thị B</td><td>21</td><td>svb@email.com</td></tr>
+                    </tbody>
+                </table>
+                <ul class="small text-muted">
+                    <li>Dòng 1 là tiêu đề, dữ liệu bắt đầu từ dòng 2</li>
+                    <li>StudentCode và FullName là bắt buộc</li>
+                    <li>Age phải từ 18 đến 60</li>
+                    <li>Mã SV trùng sẽ bị bỏ qua</li>
+                </ul>
+                <a asp-action="DownloadTemplate" class="btn btn-success btn-sm">
+                    ⬇️ Tải file Excel mẫu
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-controller="Student" asp-action="Index" class="btn btn-secondary">← Xem danh sách sinh viên</a>
+</div>

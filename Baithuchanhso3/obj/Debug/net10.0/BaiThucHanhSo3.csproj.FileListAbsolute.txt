@@ -320,3 +320,11 @@ C:\Users\ADMIN\Documents\BTVN\BaiThucHanhSo3\baithuchanhso3\obj\Debug\net10.0\re
 C:\Users\ADMIN\Documents\BTVN\BaiThucHanhSo3\baithuchanhso3\obj\Debug\net10.0\BaiThucHanhSo3.pdb
 C:\Users\ADMIN\Documents\BTVN\BaiThucHanhSo3\baithuchanhso3\obj\Debug\net10.0\BaiThucHanhSo3.genruntimeconfig.cache
 C:\Users\ADMIN\Documents\BTVN\BaiThucHanhSo3\baithuchanhso3\obj\Debug\net10.0\ref\BaiThucHanhSo3.dll
+C:\Users\ADMIN\Documents\BTVN\BaiThucHanhSo3\baithuchanhso3\bin\Debug\net10.0\ClosedXML.dll
+C:\Users\ADMIN\Documents\BTVN\BaiThucHanhSo3\baithuchanhso3\bin\Debug\net10.0\ClosedXML.Parser.dll
+C:\Users\ADMIN\Documents\BTVN\BaiThucHanhSo3\baithuchanhso3\bin\Debug\net10.0\DocumentFormat.OpenXml.dll
+C:\Users\ADMIN\Documents\BTVN\BaiThucHanhSo3\baithuchanhso3\bin\Debug\net10.0\DocumentFormat.OpenXml.Framework.dll
+C:\Users\ADMIN\Documents\BTVN\BaiThucHanhSo3\baithuchanhso3\bin\Debug\net10.0\ExcelNumberFormat.dll
+C:\Users\ADMIN\Documents\BTVN\BaiThucHanhSo3\baithuchanhso3\bin\Debug\net10.0\RBush.dll
+C:\Users\ADMIN\Documents\BTVN\BaiThucHanhSo3\baithuchanhso3\bin\Debug\net10.0\SixLabors.Fonts.dll
+C:\Users\ADMIN\Documents\BTVN\BaiThucHanhSo3\baithuchanhso3\bin\Debug\net10.0\System.IO.Packaging.dll
